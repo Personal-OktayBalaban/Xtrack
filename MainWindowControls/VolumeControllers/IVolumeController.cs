@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace Xtrack.MainWindowControls
+namespace Xtrack.MainWindowControls.VolumeControllers
 {
     public interface IVolumeController
     {

@@ -16,7 +16,7 @@ namespace Xtrack.Channel
 
         private float _volume = 0.5f;
 
-        private bool _isWavePlayerInitialized = false;
+        private bool _isWavePlayerInitialized;
 
         public Track(string filePath)
         {
@@ -26,6 +26,8 @@ namespace Xtrack.Channel
             }
 
             _filePath = filePath;
+
+            _isWavePlayerInitialized = false;
         }
 
         public void SetFilepath(string filePath)

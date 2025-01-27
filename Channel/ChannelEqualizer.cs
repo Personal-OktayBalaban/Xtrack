@@ -5,8 +5,8 @@ namespace Xtrack.Channel
 {
     public class ChannelEqualizer : IChannelEqualizer
     {
-        private EqualizerBand[] _bands;
-        private ITrack? _track; // Çalan şarkıya eşzamanlı güncelleme için Track referansı
+        private readonly EqualizerBand[] _bands;
+        private ITrack? _track;
 
         public ChannelEqualizer(ITrack track)
         {

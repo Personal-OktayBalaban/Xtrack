@@ -11,7 +11,7 @@ namespace Xtrack
     {
         private static AppManager _instance;
 
-        private IChannelManager _channelManager;
+        private readonly IChannelManager _channelManager;
 
         public static AppManager Instance
         {

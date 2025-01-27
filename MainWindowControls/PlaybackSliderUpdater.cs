@@ -25,7 +25,14 @@ namespace Xtrack.MainWindowControls
             _isPlaying = false;
         }
 
-        public void Start(TimeSpan initialTime = default)
+        public void Start()
+        {
+            _currentTime = TimeSpan.Zero;
+            _isPlaying = true;
+            _timer.Start();
+        }
+
+        public void Start(TimeSpan initialTime)
         {
             _currentTime = initialTime;
             _isPlaying = true;
@@ -45,9 +52,13 @@ namespace Xtrack.MainWindowControls
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            if (!_isPlaying) return;
+            if (!_isPlaying)
+            {
+                return;
+            }
 
             var totalTime = _getTrackLength();
+            
             if (_currentTime >= totalTime)
             {
                 _currentTime = totalTime;

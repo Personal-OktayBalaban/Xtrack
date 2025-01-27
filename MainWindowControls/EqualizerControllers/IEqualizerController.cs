@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Xtrack.MainWindowControls
+namespace Xtrack.MainWindowControls.EqualizerControllers
 {
     public interface IEqualizerController
     {

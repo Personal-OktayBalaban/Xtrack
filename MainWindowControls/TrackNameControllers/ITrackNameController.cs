@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using Xtrack.Channel;
 
-namespace Xtrack.MainWindowControls
+namespace Xtrack.MainWindowControls.TrackNameControllers
 {
     public interface ITrackNameController
     {

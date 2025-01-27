@@ -6,6 +6,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Xtrack.Channel;
 using Xtrack.MainWindowControls;
+using Xtrack.MainWindowControls.EqualizerControllers;
+using Xtrack.MainWindowControls.TrackNameControllers;
+using Xtrack.MainWindowControls.VolumeControllers;
 using Xtrack.TrackSaving;
 
 namespace Xtrack
@@ -24,11 +27,13 @@ namespace Xtrack
 
         private TimeSpan _trackDuration;
 
-        private bool _isConstructed = false;
+        private readonly bool _isConstructed;
 
 
         public MainWindow()
         {
+            _isConstructed = false;
+
             InitializeComponent();
             DisableAllControls();
 
@@ -259,7 +264,10 @@ namespace Xtrack
 
         private void OnEqualizerChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (!_isConstructed) return;
+            if (!_isConstructed)
+            {
+                return;
+            }
 
             if (sender is Slider slider)
             {

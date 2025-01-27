@@ -2,7 +2,8 @@
 {
     public interface IPlaybackSliderUpdater
     {
-        void Start(TimeSpan initialTime = default);
+        void Start();
+        void Start(TimeSpan initialTime);
         void Stop();
         void SetCurrentTime(TimeSpan time);
     }
