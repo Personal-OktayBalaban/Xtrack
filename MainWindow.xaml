@@ -1,0 +1,420 @@
+﻿<Window x:Class="Xtrack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Xtrack Music Player" Height="1000" Width="800">
+    <Window.Resources>
+        <!-- Button Hover Style -->
+        <Style x:Key="HoverButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#3A8DD7" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Padding" Value="5,2" />
+            <Setter Property="BorderBrush" Value="#3A8DD7" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5CA9E6" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Toggle Switch Style -->
+        <Style x:Key="TogglerStyle" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Width="50" Height="20">
+                            <Border x:Name="BackgroundBorder"
+                                    Background="#D3D3D3"
+                                    CornerRadius="10"
+                                    Height="20"
+                                    Width="50" />
+                            <Ellipse x:Name="SwitchThumb"
+                                     Fill="White"
+                                     Width="18"
+                                     Height="18"
+                                     HorizontalAlignment="Left"
+                                     Margin="1" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="#3A8DD7" />
+                                <Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="#B0C4DE" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Channel Border Style -->
+        <Style x:Key="ChannelBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFFFFF" />
+            <!-- Default active -->
+            <Setter Property="Opacity" Value="1" />
+            <!-- Default active -->
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#D3D3D3" />
+                    <!-- Gray for inactive -->
+                    <Setter Property="Opacity" Value="0.5" />
+                    <!-- Reduced opacity for inactive -->
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <!-- Define Rows -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <!-- Button Row -->
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Load Folder Button -->
+            <Button Grid.Column="0" Content="Load Folder" Width="120" Height="40" Click="OnLoadFolderClick"
+                Margin="5" HorizontalAlignment="Left" Style="{StaticResource HoverButtonStyle}" />
+
+            <!-- Play All and Stop All (Centered) -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="PlayAllButton" Content="Play All" Width="120" Height="40"
+                    Click="OnPlayAllClick" Margin="5" Style="{StaticResource HoverButtonStyle}" IsEnabled="False" />
+                <Button x:Name="StopAllButton" Content="Stop All" Width="120" Height="40"
+                    Click="OnStopAllClick" Margin="5" Style="{StaticResource HoverButtonStyle}" IsEnabled="False" />
+            </StackPanel>
+
+            <!-- Save Button -->
+            <Button x:Name="SaveButton" Grid.Column="3" Content="Save" Width="120" Height="40"
+                Click="OnSaveClick" Margin="5" HorizontalAlignment="Right"
+                Style="{StaticResource HoverButtonStyle}" IsEnabled="False" />
+        </Grid>
+
+        <!-- Channel Section -->
+        <Grid x:Name="ChannelsGrid" Grid.Row="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Channel 1 -->
+            <Border Grid.Row="0" Margin="5" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Style="{StaticResource ChannelBorderStyle}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mute Toggle -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox x:Name="MuteChannel1" Content="Mute" VerticalAlignment="Center" 
+                          Margin="5" Checked="OnMuteToggleChange" Unchecked="OnMuteToggleChange" 
+                          IsChecked="True" Style="{StaticResource TogglerStyle}" Tag="0" />
+                    </StackPanel>
+
+                    <!-- Volume Slider -->
+                    <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Volume" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <Slider x:Name="VolumeChannel1" Minimum="0" Maximum="1" Value="0.5" 
+                            Margin="5" ValueChanged="OnVolumeChanged" Tag="0" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Equalizer Sliders -->
+                    <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Equalizer" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Bass" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="BassChannel1" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="0" ValueChanged="OnEqualizerChanged" ToolTip="Bass" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Mid" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="MidChannel1" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="0" ValueChanged="OnEqualizerChanged" ToolTip="Mid" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Treble" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="TrebleChannel1" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="0" ValueChanged="OnEqualizerChanged" ToolTip="Treble" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Track Name Display -->
+                    <TextBlock x:Name="TrackNameChannel1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="Bold" Text="No Track Loaded" FontSize="14" Margin="5"/>
+                </Grid>
+            </Border>
+
+            <!-- Repeat the above structure for each additional channel (2 to 5) -->
+
+            <!-- Channel 2 -->
+            <Border Grid.Row="1" Margin="5" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Style="{StaticResource ChannelBorderStyle}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mute Toggle -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox x:Name="MuteChannel2" Content="Mute" VerticalAlignment="Center" 
+                          Margin="5" Checked="OnMuteToggleChange" Unchecked="OnMuteToggleChange" 
+                          IsChecked="True" Style="{StaticResource TogglerStyle}" Tag="1" />
+                    </StackPanel>
+
+                    <!-- Volume Slider -->
+                    <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Volume" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <Slider x:Name="VolumeChannel2" Minimum="0" Maximum="1" Value="0.5" 
+                            Margin="5" ValueChanged="OnVolumeChanged" Tag="1" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Equalizer Sliders -->
+                    <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Equalizer" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Bass" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="BassChannel2" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="1" ValueChanged="OnEqualizerChanged" ToolTip="Bass" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Mid" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="MidChannel2" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="1" ValueChanged="OnEqualizerChanged" ToolTip="Mid" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Treble" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="TrebleChannel2" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="1" ValueChanged="OnEqualizerChanged" ToolTip="Treble" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Track Name Display -->
+                    <TextBlock x:Name="TrackNameChannel2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="Bold" Text="No Track Loaded" FontSize="14" Margin="5"/>
+                </Grid>
+            </Border>
+
+            <!-- Channel 3 -->
+            <Border Grid.Row="2" Margin="5" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Style="{StaticResource ChannelBorderStyle}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mute Toggle -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox x:Name="MuteChannel3" Content="Mute" VerticalAlignment="Center" 
+                          Margin="5" Checked="OnMuteToggleChange" Unchecked="OnMuteToggleChange" 
+                          IsChecked="True" Style="{StaticResource TogglerStyle}" Tag="2" />
+                    </StackPanel>
+
+                    <!-- Volume Slider -->
+                    <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Volume" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <Slider x:Name="VolumeChannel3" Minimum="0" Maximum="1" Value="0.5" 
+                            Margin="5" ValueChanged="OnVolumeChanged" Tag="2" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Equalizer Sliders -->
+                    <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Equalizer" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Bass" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="BassChannel3" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="2" ValueChanged="OnEqualizerChanged" ToolTip="Bass" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Mid" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="MidChannel3" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="2" ValueChanged="OnEqualizerChanged" ToolTip="Mid" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Treble" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="TrebleChannel3" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="2" ValueChanged="OnEqualizerChanged" ToolTip="Treble" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Track Name Display -->
+                    <TextBlock x:Name="TrackNameChannel3" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="Bold" Text="No Track Loaded" FontSize="14" Margin="5"/>
+                </Grid>
+            </Border>
+
+            <!-- Channel 4 -->
+            <Border Grid.Row="3" Margin="5" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Style="{StaticResource ChannelBorderStyle}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mute Toggle -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox x:Name="MuteChannel4" Content="Mute" VerticalAlignment="Center" 
+                          Margin="5" Checked="OnMuteToggleChange" Unchecked="OnMuteToggleChange" 
+                          IsChecked="True" Style="{StaticResource TogglerStyle}" Tag="3" />
+                    </StackPanel>
+
+                    <!-- Volume Slider -->
+                    <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Volume" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <Slider x:Name="VolumeChannel4" Minimum="0" Maximum="1" Value="0.5" 
+                            Margin="5" ValueChanged="OnVolumeChanged" Tag="3" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Equalizer Sliders -->
+                    <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Equalizer" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Bass" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="BassChannel4" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="3" ValueChanged="OnEqualizerChanged" ToolTip="Bass" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Mid" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="MidChannel4" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="3" ValueChanged="OnEqualizerChanged" ToolTip="Mid" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Treble" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="TrebleChannel4" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="3" ValueChanged="OnEqualizerChanged" ToolTip="Treble" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Track Name Display -->
+                    <TextBlock x:Name="TrackNameChannel4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="Bold" Text="No Track Loaded" FontSize="14" Margin="5"/>
+                </Grid>
+            </Border>
+
+            <!-- Channel 5 -->
+            <Border Grid.Row="4" Margin="5" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" Style="{StaticResource ChannelBorderStyle}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mute Toggle -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <CheckBox x:Name="MuteChannel5" Content="Mute" VerticalAlignment="Center" 
+                          Margin="5" Checked="OnMuteToggleChange" Unchecked="OnMuteToggleChange" 
+                          IsChecked="True" Style="{StaticResource TogglerStyle}" Tag="4" />
+                    </StackPanel>
+
+                    <!-- Volume Slider -->
+                    <Border Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Volume" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <Slider x:Name="VolumeChannel5" Minimum="0" Maximum="1" Value="0.5" 
+                            Margin="5" ValueChanged="OnVolumeChanged" Tag="4" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Equalizer Sliders -->
+                    <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" CornerRadius="3" Padding="5">
+                        <StackPanel>
+                            <TextBlock Text="Equalizer" HorizontalAlignment="Center" Margin="0,5,0,5" FontWeight="Bold" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Bass" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="BassChannel5" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="4" ValueChanged="OnEqualizerChanged" ToolTip="Bass" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Mid" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="MidChannel5" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="4" ValueChanged="OnEqualizerChanged" ToolTip="Mid" />
+                                </StackPanel>
+                                <StackPanel Width="60" Margin="5">
+                                    <TextBlock Text="Treble" HorizontalAlignment="Center" FontSize="10" />
+                                    <Slider x:Name="TrebleChannel5" Minimum="-10" Maximum="10" Value="0" 
+                                    Tag="4" ValueChanged="OnEqualizerChanged" ToolTip="Treble" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Track Name Display -->
+                    <TextBlock x:Name="TrackNameChannel5" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontWeight="Bold" Text="No Track Loaded" FontSize="14" Margin="5"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+
+        <!-- Control Bar -->
+        <Grid Grid.Row="3" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Current Time -->
+            <TextBlock x:Name="CurrentTimeText" Text="00:00" VerticalAlignment="Center" Margin="5" Grid.Column="0" />
+
+            <!-- Playback Slider -->
+            <Slider x:Name="PlaybackSlider" Minimum="0" Maximum="100" Value="0" IsEnabled="False" 
+                    VerticalAlignment="Center" Grid.Column="1" Margin="5"
+                    PreviewMouseLeftButtonUp="OnPlaybackSliderMouseReleased"/>
+
+            <!-- Total Duration -->
+            <TextBlock x:Name="TotalTimeText" Text="00:00" VerticalAlignment="Center" Margin="5" Grid.Column="2" />
+        </Grid>
+    </Grid>
+</Window>
